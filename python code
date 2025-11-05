@@ -1,0 +1,191 @@
+#gradebook analyzer 
+#name : chavi jaiswal
+#roll no.: 2501410011
+#date:5th november 2025        
+#course : problem solvong using python 
+
+
+#Welcome text 
+print("Welcome to Gradebook Analyzer! ")
+print("This program will help manage and analyze student marks!\n")
+#\n : it is an escape sequence representing the newline character.
+
+
+print("Menu:")
+print("1) Enter student marks")
+print("2) Load student marks from a CSV file")
+print("0) Done ")
+
+
+import csv 
+#Comma separated values: It is a plain text file format used to store tabular data,
+#where each line is a data record and the values in each record are separated by commas. 
+print("\n\t Task 2: Data Entry Or Csv files")
+print("\t1. Mannual Entry")
+print("\t2. Load from student.csv")
+#\n : represents a newline character
+#\t :  represents a horizontal tab character
+
+
+choice =int(input("\n\tEnter your choice (1 or 2):"))
+marks={}
+
+
+#mannual entry 
+if choice==1:
+    n= int(input("\n\tEnter number of students:"))
+    for i in range(n):
+        name=input("\tEnter student name: ")
+        mark= float(input("\tEnter marks:"))
+        marks[name]= mark
+
+
+#load from csv files 
+elif choice == 2:
+    file_name = input("\n\tEnter csv file name (with .csv extension): ")
+    try:
+        with open(file_name, "r") as file:
+            reader = csv.reader(file)
+            next(reader)
+            for row in reader:
+                if len(row) >= 2:
+                    name = row[0]
+                    mark = float(row[1])
+                    marks[name] =mark
+        print(f"\n\tData loaded successfully from {file_name}!")
+    except FileNotFoundError:
+        print(f"\n\tError: File '{file_name}' not found!")
+
+else:
+    print("\n\tInvalid choice!")
+
+print("\n\tStudent Marks Data: ")
+for name in marks:
+    print(f"\t{name}\t:\t{marks[name]}")
+
+
+#Statistical Analysis Functions
+#functions to calculate average
+def calculate_average(marks_dict):
+    total = sum(marks_dict.values())
+    return total/ len(marks_dict)
+
+#function ton calculate median
+def calculate_median(marks_dict):
+    marks_list = sorted(marks_dict.values())
+    n = len(marks_list)
+    if n%2 == 0:
+        mid1 = marks_list[n//2 -1 ]
+        mid2 = marks_list[n//2]
+        return (mid1 + mid2) / 2
+    else:
+        return marks_list[n//2]
+    
+#functions to find max score 
+def find_max_score(marks_dict):
+    highest_name= max(marks_dict, key = marks_dict.get)
+    return highest_name, marks_dict[highest_name]
+
+#function to find lowest score or min score 
+def find_min_score(marks_dict):
+    lowest_name = min(marks_dict, key=marks_dict.get)
+    return lowest_name, marks_dict[lowest_name]
+
+if len(marks) > 0:
+    avg = calculate_average(marks)
+    med = calculate_median(marks)
+    high_name, high_score = find_max_score(marks)
+    low_name, low_score = find_min_score(marks)
+
+    #this will dipplay 
+    print("\n\t--- Student Marks Statistics ---")
+    print(f"\tAverage Marks:\t{avg}")
+    print(f"\tMedian Marks:\t{med}")
+    print(f"\tHighest Marks:\t{high_score} by {high_name}")
+    print(f"\tLowest Marks:\t{low_score} by {low_name}")
+else:
+    print("\n\tNo data available! Please run Task 2 first.")
+
+# ---- Task 4: Grade Assignment and Distribution ----
+print("\n\tTask 4: Grade Assignment and Distribution")
+
+#Function to assign grades
+def assign_grade(score):
+    if score >= 90:
+        return "A"
+    elif score >= 80:
+        return "B"
+    elif score >= 70:
+        return "C"
+    elif score >= 60:
+        return "D"
+    else:
+        return "F"
+
+#Checking if marks distribution has data
+if len(marks) > 0:
+    grades = {}
+
+    # Assining gardes 
+    for name, score in marks.items():
+        grades[name] = assign_grade(score)
+
+    # Count how many students fall into each grade
+    grade_count = {"A": 0, "B": 0, "C": 0, "D": 0, "F": 0}
+    for g in grades.values():
+        grade_count[g] += 1
+
+    #grades will display
+    print("\n\t--- Grade Summary ---")
+    for name, grade in grades.items():
+        print(f"\t{name}\t:\t{grade}")
+
+    #Display count of each grade
+    print("\n\t--- Grade Distribution ---")
+    for grade, count in grade_count.items():
+        print(f"\t{grade} : {count} students")
+else:
+    print("\n\tNo data available! Please run Task 2 first.")
+    
+
+#pass and fail 
+print("\n\tTask 5: Pass/Fail Filter using List Comprehension")
+
+#Checking if marks dictionary has data
+if len(marks) > 0:
+    # Using list comprehension to separate students
+    passed_students = [name for name, m in marks.items() if m >= 40]
+    failed_students = [name for name, m in marks.items() if m < 40]
+
+    # Display both lists
+    print("\n\t--- Pass/Fail Summary ---")
+    print(f"\tPassed Students ({len(passed_students)}): {passed_students}")
+    print(f"\tFailed Students ({len(failed_students)}): {failed_students}")
+
+else:
+    print("\n\tNo data available! Please run previous taskfirst.")
+
+
+#full result table
+print("\n\tTask 6: Results Table and User Loop")
+
+#using a while loop to allow user to repeat or exit
+while True:
+    if len(marks) > 0:
+        print("\n\t--- Student Results Table ---")
+        print("\tName\t\tMarks\t\tGrade")
+        print("\t------------------------------------")
+
+        #Display all student results
+        for name, score in marks.items():
+            grade = grades.get(name, "N/A")  # get grade from grades dictionary
+            print(f"\t{name}\t\t{score}\t\t{grade}")
+
+        #Menu for user to choose again
+        choice = input("\n\tDo you want to run the analysis again? (y/n): ").lower()
+        if choice != 'y':
+            print("\n\tExiting the program. Thank you!")
+            break
+    else:
+        print("\n\tNo data available! Please run Task 2 first.")
+        break
